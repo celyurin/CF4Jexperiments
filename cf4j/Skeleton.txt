@@ -1,0 +1,34 @@
+
+import es.upm.etsisi.cf4j.data.BenchmarkDataModels;
+import es.upm.etsisi.cf4j.util.plot.LinePlot;
+import es.upm.etsisi.cf4j.qualityMeasure.QualityMeasure;
+importQualityMeasure
+importRecommenders
+import es.upm.etsisi.cf4j.data.DataModel;
+
+import java.io.IOException;
+
+
+public class CF4JExecutable {
+  public static void main(String[] args) throws IOException {
+
+    DataModel datamodel = BenchmarkDataModels.MovieLens100K();
+
+    double[] regValues = { ReguValues };
+    LinePlot plot = new LinePlot(regValues, "regularization", "QuMeasure");
+
+    addSeriesRecommenders
+
+    for (double reg : regValues) {
+      definitionRecommenderModels
+
+      definitionQMeasures
+
+      setValues
+    }
+
+    plot.draw();
+    plot.printData("0.000");
+    plot.exportPlot("diagrama.png");
+  }
+}
