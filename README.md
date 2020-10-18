@@ -7,6 +7,7 @@ npm install
 npm start
 ```
 ## Para arrancar el cliente:
+(en un terminal separado)
 ``` bash
 cd client
 npm install
