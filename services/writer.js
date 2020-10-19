@@ -21,14 +21,14 @@ const writer = {
 
             addSeries += "plot.addSeries(" + "\"" + recName + "\"" + ");\n";
 
-            if (recName == "PMF") {
+            if (recName == "NMF") {
                 defRecommenders += recName + " " + recName.toLowerCase() + " = new " + recName + "(datamodel," 
-                    + body.diagrams[i].params[0] + "," + body.diagrams[i].params[1] + ", reg, " + body.diagrams[i].params[2] + ", " + body.diagrams[i].params[3] + ");\n" 
-                    + recName.toLowerCase() + ".fit();\n\n";
+                //+ body.diagrams[i].params[0] + "," + body.diagrams[i].params[1] + ", reg, " + body.diagrams[i].params[2] + ");\n" 
+                + body.diagrams[i].params[0] + "," + body.diagrams[i].params[1] + ");\n"
+                + recName.toLowerCase() + ".fit();\n\n";
             } else {
                 defRecommenders += recName + " " + recName.toLowerCase() + " = new " + recName + "(datamodel," 
-                    //+ body.diagrams[i].params[0] + "," + body.diagrams[i].params[1] + ", reg, " + body.diagrams[i].params[2] + ");\n" 
-                    + body.diagrams[i].params[0] + "," + body.diagrams[i].params[1] + ");\n"
+                    + body.diagrams[i].params[0] + "," + body.diagrams[i].params[1] + ", reg, " + body.diagrams[i].params[2] + ", " + body.diagrams[i].params[3] + ");\n" 
                     + recName.toLowerCase() + ".fit();\n\n";
             }
 

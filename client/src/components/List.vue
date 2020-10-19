@@ -308,14 +308,15 @@ export default {
             console.log(err);
           });
         this.loading = true;
-        this.showPlot();
+        //mostramos un modal con la gráfica resultado
+        //this.showPlot();
       }
     },
-    showPlot() {
+    /*showPlot() {
       var self = this;
       setTimeout(function() {
         console.log("salta el timeout!!!!");
-        var diagramFile = '../../../blank.png';
+        var diagramFile = '../../../diagrama.png';
         self.imageSRC = require(diagramFile);
         self.grafica = true;
         self.imagen += '<h1 class="closing-cross" v-on:click="closeModal()">×</h1><img :src="imageSRC" />';
@@ -324,7 +325,7 @@ export default {
     },
     fakeVmodel: function(e) {
       this.imagen = e.target.innerText;
-    }
+    }*/
   }
 };
 </script>
