@@ -1,7 +1,14 @@
-# MEVN CF4J experiment UI (MongoDB, Express, VueJS, NodeJS)
+# CF4J experiments UI 
 
 
-
-## Setup
-
-Manually clone the repo and then run `npm install`.
+## Para arrancar el server:
+``` bash
+npm install
+npm start
+```
+## Para arrancar el cliente:
+(en un terminal separado)
+``` bash
+cd client
+npm install
+npm run serve
