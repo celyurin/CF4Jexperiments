@@ -3,7 +3,7 @@ var executer = require('../services/executer')
 
 const writer = {
 
-    createFile: (body) => {
+    createFile: async (body) => {
         //var regValues = body.regValues.split(',').map(Number);
         var regValues = body.regValues;
         //var dataset = body.diagrams[0].dataset;
@@ -42,8 +42,6 @@ const writer = {
             if (err) {
                 throw err;
             }
-            
-            let prueba = "jiji"
 
             var mapObj = {
                 importQualityMeasure: "import es.upm.etsisi.cf4j.qualityMeasure.prediction." + qmeasure + ";",
@@ -60,8 +58,12 @@ const writer = {
             });
 
             writer.writeFile(data);
-            executer.runFile();
+            
         });
+        let respuesta = await executer.runFile();
+        console.log("respuesta executer.js");
+        console.log(respuesta);
+        return respuesta;
     },
 
     writeFile: (data) => {

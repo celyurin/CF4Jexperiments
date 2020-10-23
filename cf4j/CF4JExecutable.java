@@ -36,8 +36,8 @@ double mseScore0 = mse0.getScore();
 
     }
 
-    plot.draw();
-    plot.printData("0.000");
-    plot.exportPlot("diagrama.png");
+    //plot.draw();
+    //plot.printData("0.000");
+    plot.exportPlot("client/static/diagrama.png");
   }
 }

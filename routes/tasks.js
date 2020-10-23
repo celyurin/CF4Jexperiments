@@ -17,9 +17,9 @@ router.get("/image", function (req, res) {
 
 
 //recibo el diagrama
-router.post("/task", function (req, res) {
+router.post("/task", async function (req, res) {
   var body = req.body;
-  console.log(body);
+  //console.log(body);
   if (!body) {
     res.status(400);
     res.json({
@@ -31,8 +31,20 @@ router.post("/task", function (req, res) {
       let parametros = body.diagrams[i].params;
       body.diagrams[i].params = parametros.split(',').map(Number);
     }
-    writer.createFile(body);
-    //executer.runFile();
+    let respuesta = new Promise (async resolve => {
+      resolve = await writer.createFile(body);
+      console.log("respuesta del writer.js");
+      console.log(resolve);
+      res.json({
+        diagrama: "ejecutado!"
+      });
+    });
+
+    (async () => {
+      await respuesta;
+    })().catch (e => console.log("Caught: " + e));
+  
+
   }
 });
 

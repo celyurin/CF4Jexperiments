@@ -139,7 +139,8 @@ export default {
       //imageSRC: require('../../../diagrama.png'),
       imageSRC: "",
       loading: false,
-      imagen: ""
+      imagen: "",
+      fakeVmodel: ''
     };
   },
   components: {
@@ -290,7 +291,7 @@ export default {
         this.bnmf_input = "";
       }
     },
-    runDiagram() {
+    async runDiagram() {
       if (this.reg_input == "") {
         alert("Tienes que introducir los valores de regularización");
       } else {
@@ -299,7 +300,9 @@ export default {
           diagrams: this.diagramas
         };
         console.log(reqBody);
-        axios
+        this.loading = true;
+        //await
+        await axios
           .post("/api/task", reqBody)
           .then(res => {
             console.log(res);
@@ -307,25 +310,16 @@ export default {
           .catch(err => {
             console.log(err);
           });
-        this.loading = true;
         //mostramos un modal con la gráfica resultado
-        //this.showPlot();
+        this.showPlot();
       }
     },
-    /*showPlot() {
-      var self = this;
-      setTimeout(function() {
-        console.log("salta el timeout!!!!");
-        var diagramFile = '../../../diagrama.png';
-        self.imageSRC = require(diagramFile);
-        self.grafica = true;
-        self.imagen += '<h1 class="closing-cross" v-on:click="closeModal()">×</h1><img :src="imageSRC" />';
-        self.loading = false;
-      }, 10000);
-    },
-    fakeVmodel: function(e) {
-      this.imagen = e.target.innerText;
-    }*/
+    showPlot() {
+      this.loading = false;
+      this.grafica = true;
+      this.imagen += '<h1 class="closing-cross" v-on:click="closeModal()">×</h1><img src="static/diagrama.png">';
+    }
+ 
   }
 };
 </script>
@@ -478,3 +472,9 @@ export default {
   transition: opacity 0.3s ease;
 }
 </style>
+
+
+
+
+
+
