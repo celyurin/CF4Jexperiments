@@ -21,21 +21,14 @@ const writer = {
 
             addSeries += "plot.addSeries(" + "\"" + recName + "\"" + ");\n";
 
-            if (recName == "NMF") {
-                defRecommenders += recName + " " + recName.toLowerCase() + " = new " + recName + "(datamodel," 
-                //+ body.diagrams[i].params[0] + "," + body.diagrams[i].params[1] + ", reg, " + body.diagrams[i].params[2] + ");\n" 
-                + body.diagrams[i].params[0] + "," + body.diagrams[i].params[1] + ");\n"
+            defRecommenders += recName + " " + recName.toLowerCase() + " = new " + recName + "(datamodel,"
+                + body.diagrams[i].params + ");\n"
                 + recName.toLowerCase() + ".fit();\n\n";
-            } else {
-                defRecommenders += recName + " " + recName.toLowerCase() + " = new " + recName + "(datamodel," 
-                    + body.diagrams[i].params[0] + "," + body.diagrams[i].params[1] + ", reg, " + body.diagrams[i].params[2] + ", " + body.diagrams[i].params[3] + ");\n" 
-                    + recName.toLowerCase() + ".fit();\n\n";
-            }
 
             defQMeasures += "QualityMeasure " + qmeasure.toLowerCase() + i + " = new " + qmeasure + "(" + recName.toLowerCase() +");\n"
                 + "double mseScore" + i + " = " + qmeasure.toLowerCase() + i + ".getScore();\n\n";
             
-            setVal += "plot.setValue(" + "\"" + recName + "\"" + ", reg, mseScore" + i + ");\n" 
+            setVal += "plot.setValue(" + "\"" + recName + "\"" + ", rango, mseScore" + i + ");\n" 
         }
 
         fs.readFile('./cf4j/Skeleton.txt', { encoding: "utf-8" }, function (err, data) {
@@ -46,14 +39,14 @@ const writer = {
             var mapObj = {
                 importQualityMeasure: "import es.upm.etsisi.cf4j.qualityMeasure.prediction." + qmeasure + ";",
                 importRecommenders: imports,
-                ReguValues: regValues,
+                RangeValues: regValues,
                 QuMeasure: qmeasure,
                 addSeriesRecommenders: addSeries,
                 definitionRecommenderModels: defRecommenders,
                 definitionQMeasures: defQMeasures,
                 setValues: setVal
             };
-            data = data.replace(/importQualityMeasure|importRecommenders|ReguValues|QuMeasure|addSeriesRecommenders|definitionRecommenderModels|definitionQMeasures|setValues/gi, function (matched) {
+            data = data.replace(/importQualityMeasure|importRecommenders|RangeValues|QuMeasure|addSeriesRecommenders|definitionRecommenderModels|definitionQMeasures|setValues/gi, function (matched) {
                 return mapObj[matched];
             });
 

@@ -14,12 +14,12 @@ public class CF4JExecutable {
 
     DataModel datamodel = BenchmarkDataModels.MovieLens100K();
 
-    int[] values = { RangeValues };
-    LinePlot plot = new LinePlot(values, "x", "QuMeasure");
+    double[] regValues = { ReguValues };
+    LinePlot plot = new LinePlot(regValues, "regularization", "QuMeasure");
 
     addSeriesRecommenders
 
-    for (int rango : values) {
+    for (double reg : regValues) {
       definitionRecommenderModels
 
       definitionQMeasures
@@ -27,7 +27,7 @@ public class CF4JExecutable {
       setValues
     }
 
-    //plot.draw();
+    plot.draw();
     //plot.printData("0.000");
     plot.exportPlot("client/static/diagrama.png");
   }

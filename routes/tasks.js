@@ -26,11 +26,11 @@ router.post("/task", async function (req, res) {
       error: "Bad Data"
     });
   } else {
-    let i;
+    /*let i;
     for (i = 0; i < body.diagrams.length; i++) {
       let parametros = body.diagrams[i].params;
       body.diagrams[i].params = parametros.split(',').map(Number);
-    }
+    }*/
     let respuesta = new Promise (async resolve => {
       resolve = await writer.createFile(body);
       console.log("respuesta del writer.js");

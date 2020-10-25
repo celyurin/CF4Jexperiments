@@ -2,14 +2,14 @@
   <div class="contenedor">
     <p style="text-align: left;
     padding-left: 2rem;">
-      <span style="font-size:20px">※</span> Introduce los valores de regularización y los parámetros de los recomendadores separados por comas
+      <span style="font-size:20px">※</span> Introduce el rango de valores separados por comas
     </p>
     <!--<button v-on:click="checkLists()">(Temp) Chequear lista de nodos y links</button>-->
     <img v-if="loading" class="loader" src="../assets/loader.gif" />
     <button class="up-button" v-on:click="clearAll()">CLEAR</button>
     <button class="up-button" v-on:click="checkLinks()">RUN</button>
-    <span style="margin-left:15px">Introduce reg. values:</span>
-    <input class="reg-input" v-model="reg_input" type="text" placeholder="Reg. values" />
+    <span style="margin-left:15px">Introduce rango de valores:</span>
+    <input class="reg-input" v-model="val_input" type="text" placeholder="Valores (int), ej: 1, 2, 3" />
     <div class="side-menu">
       <!--datasets-->
       <button class="dropdown-btn">DATASETS</button>
@@ -22,45 +22,45 @@
       <!--recommenders-->
       <button class="dropdown-btn">ALGORITHMS</button>
       <div class="dropdown-content">
-        <div id="pmf" v-on:click="getValue('PMF', 2)" class="mock-node">
+        <div id="pmf" v-on:click="getParameters('PMF', 2)" class="mock-node">
           <div class="mock-node-type">Recom.</div>PMF
-          <input
+          <!--<input
             class="number-input"
             v-on:click.stop
             v-model="pmf_input"
             type="text"
             placeholder="Param."
-          />
+          />-->
         </div>
-        <div id="nmf" v-on:click="getValue('NMF', 2)" class="mock-node">
+        <div id="nmf" v-on:click="getParameters('NMF', 2)" class="mock-node">
           <div class="mock-node-type">Recom.</div>NMF
-          <input
+          <!--<input
             class="number-input"
             v-on:click.stop
             v-model="nmf_input"
             type="text"
             placeholder="Param."
-          />
+          />-->
         </div>
-        <div id="hpf" v-on:click="getValue('HPF', 2)" class="mock-node">
+        <div id="hpf" v-on:click="getParameters('HPF', 2)" class="mock-node">
           <div class="mock-node-type">Recom.</div>HPF
-          <input
+          <!--<input
             class="number-input"
             v-on:click.stop
             v-model="hpf_input"
             type="text"
             placeholder="Param."
-          />
+          />-->
         </div>
-        <div id="bnmf" v-on:click="getValue('BNMF', 2)" class="mock-node">
+        <div id="bnmf" v-on:click="getParameters('BNMF', 2)" class="mock-node">
           <div class="mock-node-type">Recom.</div>BNMF
-          <input
+          <!--<input
             class="number-input"
             v-on:click.stop
             v-model="bnmf_input"
             type="text"
             placeholder="Param."
-          />
+          />-->
         </div>
       </div>
       <!--qmeasures-->
@@ -83,7 +83,7 @@
     <div class="editor-container">
       <simple-flowchart :scene.sync="nodeData"></simple-flowchart>
     </div>
-    <!--modal para mostrarl el resultado-->
+    <!--modal para mostrar el resultado-->
     <div v-if="grafica">
       <transition name="modal">
         <div class="modal-mask" v-on:click="closeModal()">
@@ -96,10 +96,35 @@
               v-html="imagen"
               contenteditable="true"
             >
-              <!--<h1 class="closing-cross" v-on:click="closeModal()">×</h1>
-              <img :src="imageSRC" />-->
             </div>
           </div>
+        </div>
+      </transition>
+    </div>
+    <!--modal para los parámetros-->
+    <div v-if="recomendador">
+      <transition name="modal">
+        <div class="modal-mask" v-on:click="closeModal()">
+          <div class="modal-wrapper">
+            <div class="modal-contents" v-on:click.stop>
+              <h1 class="closing-cross" v-on:click="closeModal()">×</h1>
+              <h2 class="title-modal">Introduce los valores de los parámetros</h2>
+              <p class="subtitulo-modal">Selecciona a qué hiper-parámetro quieres asociar el rango de valores (debe ser el mismo para todos los recomendadores)</p>
+              <input type="radio" v-model="valor" value="0">
+              <input :disabled="valor == 0" id="param-1" class="number-input-modal" v-model="param_1" placeholder="NumFactors" type="text">
+              <input type="radio" v-model="valor" value="1">
+              <input :disabled="valor == 1" id="param-2" class="number-input-modal" v-model="param_2" placeholder="NumIters" type="text">
+              <input :disabled="recOpt == 0" id="param-3" class="number-input-modal" v-model="param_3" :placeholder="[[ place1 ]]" type="text">
+              <input :disabled="recOpt == 0 || recOpt == 1" id="param-4" class="number-input-modal" v-model="param_4" :placeholder="[[ place2 ]]" type="text">
+              <div>
+                <p v-if="error_vacio" class="error-msg">No puedes dejar campos vacíos</p>
+                <p v-if="error_tipo" class="error-msg">Has introducido un tipo de dato incorrecto</p>
+              </div>
+              <div>
+                <button v-on:click="checkRecParams()" class="modal-button">Añadir nodo</button>
+              </div>
+            </div> 
+          </div> 
         </div>
       </transition>
     </div>
@@ -116,15 +141,12 @@ import "vue-simple-flowchart/dist/vue-flowchart.css";
 export default {
   data() {
     return {
-      todos: [],
       id: "",
-      taskname: "",
-      isEdit: false,
-      pmf_input: "",
-      nmf_input: "",
-      hpf_input: "",
-      bnmf_input: "",
-      reg_input: "",
+      //pmf_input: "",
+      //nmf_input: "",
+      //hpf_input: "",
+      //bnmf_input: "",
+      val_input: "",
       cont: 0,
       nodeData: {
         centerX: 1024,
@@ -136,11 +158,24 @@ export default {
       diagramas: [],
       medidaExists: false,
       grafica: false,
-      //imageSRC: require('../../../diagrama.png'),
-      imageSRC: "",
       loading: false,
       imagen: "",
-      fakeVmodel: ''
+      fakeVmodel: '',
+      recomendador: false,
+      //valores de los hiper-parámetros
+      param_1: "",
+      param_2: "",
+      param_3: "",
+      param_4: "",
+      valor: 0,
+      place1: "N/A",
+      place2: "N/A",
+      recOpt: 0,
+      recType: "",
+      //errores de comprobación
+      error_tipo: false,
+      error_vacio: false,
+      recPar: {}
     };
   },
   components: {
@@ -156,6 +191,11 @@ export default {
     },
     closeModal() {
       this.grafica = false;
+      this.recomendador = false;
+      this.recParams = "";
+      this.param_1 = this.param_2 = this.param_3 = this.param_4 = "";
+      this.error_tipo = this.error_vacio = false;
+      this.recOpt = 0;
       /*axios
         .get("/api/image")
         .then(res => {
@@ -276,6 +316,90 @@ export default {
       });
       this.medidaExists = false;
     },
+    getParameters(type, id) {
+      this.recType = type;
+      this.recomendador = true;
+      if(type == "PMF") {
+        //add third param
+        this.recOpt = 1;
+        this.place1 = "Lambda";
+        this.place2 = "N/A";
+      } else if (type == "BNMF") {
+        //add third & fourth params 
+        this.recOpt = 2;
+        this.place1 = "Alpha";
+        this.place2 = "Beta";
+      }
+    },
+    checkRecParams() {
+      //comprobaciones de campos vacíos comunes y tipos de datos
+      if ((this.valor == 0 && this.param_2 == '') || (this.valor == 1 && this.param_1 == '')) {
+        this.error_vacio = true;
+      } else {
+        this.error_vacio = false;
+        if (this.param_1 % 1 != 0 || this.param_2 % 1 != 0) {
+          this.error_tipo = true;
+        } else {
+          this.error_tipo = false;
+          //comprobaciones segun tipo de rec
+          switch (this.recType) {
+            case 'PMF':
+              if (this.param_3 == '') {
+                this.error_vacio = true;
+              } else {
+                this.error_vacio = false;
+                if (this.param_3 % 1 == 0) {
+                  this.error_tipo = true;
+                } else {
+                  this.error_tipo = false;
+                }
+              }
+              break
+            case 'BNMF':
+              if (this.param_3 == '' || this.param_4 == '') {
+                this.error_vacio = true;
+              } else {
+                this.error_vacio = false;
+                if (this.param_3 % 1 == 0 || this.param_4 % 1 == 0) {
+                  this.error_tipo = true;
+                } else {
+                  this.error_tipo = false;
+                }
+              }
+              break
+          }
+        }
+      }
+      if (this.error_tipo == false && this.error_vacio == false) {
+        let paramm;
+        switch (this.valor) {
+          case 0:
+            this.param_1 = "rango";
+            break
+          case 1:
+            this.param_2 = "rango";
+        }
+        switch (this.recType) {
+          case 'NMF':
+          case 'HPF':
+            paramm = this.param_1 + ', ' + this.param_2; 
+            console.log(paramm);
+            this.addNode(this.recType, paramm, 2);
+            break
+          case 'PMF':
+            paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_3; 
+            console.log(paramm);
+            this.addNode(this.recType, paramm, 2);
+            break
+          case 'BNMF':
+            paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_3 + ', ' + this.param_4 
+            console.log(paramm);
+            this.addNode(this.recType, paramm, 2);
+        }
+      }
+      this.closeModal();
+      
+    },
     getValue(type, id) {
       //mira si se han introducido valores en el input y si no, saca un alert
       let number = this.pmf_input || this.nmf_input || this.hpf_input || this.bnmf_input;
@@ -292,11 +416,11 @@ export default {
       }
     },
     async runDiagram() {
-      if (this.reg_input == "") {
+      if (this.val_input == "") {
         alert("Tienes que introducir los valores de regularización");
       } else {
         let reqBody = {
-          regValues: this.reg_input,
+          regValues: this.val_input,
           diagrams: this.diagramas
         };
         console.log(reqBody);
@@ -400,6 +524,15 @@ export default {
   border-radius: 3px;
 }
 
+.number-input-modal {
+  width: 6rem;
+  border-color: #8080807a;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 3px;
+  margin-right: 1rem;
+}
+
 .reg-input {
   border-color: #8080807a;
   border-style: solid;
@@ -454,6 +587,11 @@ export default {
   cursor: pointer;
 }
 
+.error-msg {
+  color: #e43838;
+  text-align: left
+}
+
 .loader {
   height: 50px;
   width: auto;
@@ -470,6 +608,30 @@ export default {
   display: table;
   -webkit-transition: opacity 0.3s ease;
   transition: opacity 0.3s ease;
+}
+
+.title-modal {
+  padding: 0.5rem;
+  font-size: 25px;
+}
+
+.subtitulo-modal {
+  margin-bottom: 2rem;
+}
+
+.modal-button {
+  border: none;
+  background-color: #fd8954;
+  border-radius: 20px;
+  color: white;
+  font-weight: 500;
+  padding: 7px;
+  margin: 2rem;
+  transition: 0.3s;
+}
+
+.modal-button:hover {
+  background-color: #c1663c;
 }
 </style>
 
