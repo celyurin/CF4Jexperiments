@@ -7,7 +7,6 @@ const executer = {
                 if(stdout) {
                     //console.log('stdout: ' + stdout);
                 }
-                console.log('stderr: ' + stderr);
                 if (!stderr) {
                     //
                 }

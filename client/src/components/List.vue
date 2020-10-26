@@ -72,11 +72,17 @@
         <div id="mse" v-on:click="checkQMeasures('MSE', '', 3)" class="mock-node">
           <div class="mock-node-type">Q.Measure</div>MSE
         </div>
-        <div id="mse" v-on:click="checkQMeasures('RMSE', '', 3)" class="mock-node">
+        <div id="rmse" v-on:click="checkQMeasures('RMSE', '', 3)" class="mock-node">
           <div class="mock-node-type">Q.Measure</div>RMSE
         </div>
-        <div id="mse" v-on:click="checkQMeasures('MSLE', '', 3)" class="mock-node">
+        <div id="msle" v-on:click="checkQMeasures('MSLE', '', 3)" class="mock-node">
           <div class="mock-node-type">Q.Measure</div>MSLE
+        </div>
+        <div id="precision" v-on:click="checkQMeasures('Precision', '', 3)" class="mock-node">
+          <div class="mock-node-type">Q.Measure</div>PRECISION
+        </div>
+        <div id="recall" v-on:click="checkQMeasures('Recall', '', 3)" class="mock-node">
+          <div class="mock-node-type">Q.Measure</div>RECALL
         </div>
       </div>
     </div>
@@ -196,6 +202,7 @@ export default {
       this.param_1 = this.param_2 = this.param_3 = this.param_4 = "";
       this.error_tipo = this.error_vacio = false;
       this.recOpt = 0;
+      this.imagen = "";
       /*axios
         .get("/api/image")
         .then(res => {
@@ -335,6 +342,7 @@ export default {
       //comprobaciones de campos vacíos comunes y tipos de datos
       if ((this.valor == 0 && this.param_2 == '') || (this.valor == 1 && this.param_1 == '')) {
         this.error_vacio = true;
+        console.log("campo vacio" + this.error_vacio);
       } else {
         this.error_vacio = false;
         if (this.param_1 % 1 != 0 || this.param_2 % 1 != 0) {
@@ -385,19 +393,24 @@ export default {
             paramm = this.param_1 + ', ' + this.param_2; 
             console.log(paramm);
             this.addNode(this.recType, paramm, 2);
+            this.closeModal();
+
             break
           case 'PMF':
             paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_3; 
             console.log(paramm);
             this.addNode(this.recType, paramm, 2);
+            this.closeModal();
+
             break
           case 'BNMF':
             paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_3 + ', ' + this.param_4 
             console.log(paramm);
             this.addNode(this.recType, paramm, 2);
+            this.closeModal();
+
         }
       }
-      this.closeModal();
       
     },
     getValue(type, id) {
@@ -417,7 +430,7 @@ export default {
     },
     async runDiagram() {
       if (this.val_input == "") {
-        alert("Tienes que introducir los valores de regularización");
+        alert("Tienes que introducir el rango de valores");
       } else {
         let reqBody = {
           regValues: this.val_input,

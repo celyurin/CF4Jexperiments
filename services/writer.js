@@ -24,11 +24,23 @@ const writer = {
             defRecommenders += recName + " " + recName.toLowerCase() + " = new " + recName + "(datamodel,"
                 + body.diagrams[i].params + ");\n"
                 + recName.toLowerCase() + ".fit();\n\n";
-
-            defQMeasures += "QualityMeasure " + qmeasure.toLowerCase() + i + " = new " + qmeasure + "(" + recName.toLowerCase() +");\n"
-                + "double mseScore" + i + " = " + qmeasure.toLowerCase() + i + ".getScore();\n\n";
             
-            setVal += "plot.setValue(" + "\"" + recName + "\"" + ", rango, mseScore" + i + ");\n" 
+            if (qmeasure == "Recall" || qmeasure == "Precision") {
+                defQMeasures += "QualityMeasure " + qmeasure.toLowerCase() + i + " = new " + qmeasure + "(" + recName.toLowerCase() 
+                + ", 40, 0.2);\n"
+                + "double score" + i + " = " + qmeasure.toLowerCase() + i + ".getScore();\n\n";
+            } else {
+                defQMeasures += "QualityMeasure " + qmeasure.toLowerCase() + i + " = new " + qmeasure + "(" + recName.toLowerCase() +");\n"
+                    + "double score" + i + " = " + qmeasure.toLowerCase() + i + ".getScore();\n\n";
+            }
+
+            
+            setVal += "plot.setValue(" + "\"" + recName + "\"" + ", rango, score" + i + ");\n" 
+        }
+        if (qmeasure == "Recall" || qmeasure == "Precision") {
+            var measureImport = "import es.upm.etsisi.cf4j.qualityMeasure." + "recommendation." + qmeasure + ";";
+        } else {
+            var measureImport = "import es.upm.etsisi.cf4j.qualityMeasure." + "prediction." + qmeasure + ";"; 
         }
 
         fs.readFile('./cf4j/Skeleton.txt', { encoding: "utf-8" }, function (err, data) {
@@ -37,7 +49,7 @@ const writer = {
             }
 
             var mapObj = {
-                importQualityMeasure: "import es.upm.etsisi.cf4j.qualityMeasure.prediction." + qmeasure + ";",
+                importQualityMeasure: measureImport,
                 importRecommenders: imports,
                 RangeValues: regValues,
                 QuMeasure: qmeasure,
@@ -54,8 +66,6 @@ const writer = {
             
         });
         let respuesta = await executer.runFile();
-        console.log("respuesta executer.js");
-        console.log(respuesta);
         return respuesta;
     },
 

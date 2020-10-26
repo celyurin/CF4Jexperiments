@@ -2,8 +2,9 @@
 import es.upm.etsisi.cf4j.data.BenchmarkDataModels;
 import es.upm.etsisi.cf4j.util.plot.LinePlot;
 import es.upm.etsisi.cf4j.qualityMeasure.QualityMeasure;
-importQualityMeasure
-importRecommenders
+import es.upm.etsisi.cf4j.qualityMeasure.prediction.MSE;
+import es.upm.etsisi.cf4j.recommender.matrixFactorization.PMF;
+
 import es.upm.etsisi.cf4j.data.DataModel;
 
 import java.io.IOException;
@@ -14,17 +15,25 @@ public class CF4JExecutable {
 
     DataModel datamodel = BenchmarkDataModels.MovieLens100K();
 
-    int[] values = { RangeValues };
-    LinePlot plot = new LinePlot(values, "", "QuMeasure");
+    int[] values = { 1,2,3,4,5,6,7 };
+    LinePlot plot = new LinePlot(values, "", "MSE");
 
-    addSeriesRecommenders
+    plot.addSeries("PMF");
+
 
     for (int rango : values) {
-      definitionRecommenderModels
+      PMF pmf = new PMF(datamodel,rango, 50, 0.01);
+pmf.fit();
 
-      definitionQMeasures
 
-      setValues
+
+      QualityMeasure mse0 = new MSE(pmf);
+double score0 = mse0.getScore();
+
+
+
+      plot.setValue("PMF", rango, score0);
+
     }
 
     //plot.draw();

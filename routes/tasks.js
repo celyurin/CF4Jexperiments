@@ -33,11 +33,9 @@ router.post("/task", async function (req, res) {
     }*/
     let respuesta = new Promise (async resolve => {
       resolve = await writer.createFile(body);
-      console.log("respuesta del writer.js");
-      console.log(resolve);
       res.json({
-        diagrama: "ejecutado!"
-      });
+        diagrama: "Ejecutado con éxito!"
+      })
     });
 
     (async () => {
