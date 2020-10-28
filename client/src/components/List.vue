@@ -1,13 +1,14 @@
 <template>
   <div class="contenedor">
+    <h2 style="text-align: left;margin-left: 1.8rem;">UI para experimentos en CF4J</h2>
     <p style="text-align: left;
     padding-left: 2rem;">
       <span style="font-size:20px">※</span> Introduce el rango de valores separados por comas
     </p>
     <!--<button v-on:click="checkLists()">(Temp) Chequear lista de nodos y links</button>-->
     <img v-if="loading" class="loader" src="../assets/loader.gif" />
-    <button class="up-button" v-on:click="clearAll()">CLEAR</button>
-    <button class="up-button" v-on:click="checkLinks()">RUN</button>
+    <button class="up-button" v-on:click="clearAll()">LIMPIAR</button>
+    <button class="up-button" v-on:click="checkLinks()">EJECUTAR</button>
     <span style="margin-left:15px">Introduce rango de valores:</span>
     <input class="reg-input" v-model="val_input" type="text" placeholder="Valores (int), ej: 1, 2, 3" />
     <div class="side-menu">
@@ -20,7 +21,7 @@
         </div>
       </div>
       <!--recommenders-->
-      <button class="dropdown-btn">ALGORITHMS</button>
+      <button class="dropdown-btn">ALGORITMOS</button>
       <div class="dropdown-content">
         <div id="pmf" v-on:click="getParameters('PMF', 2)" class="mock-node">
           <div class="mock-node-type">Recom.</div>PMF
@@ -64,7 +65,7 @@
         </div>
       </div>
       <!--qmeasures-->
-      <button class="dropdown-btn">QUALITY MEASURES</button>
+      <button class="dropdown-btn">MEDIDAS DE CALIDAD</button>
       <div class="dropdown-content">
         <div id="mae" v-on:click="checkQMeasures('MAE', '', 3)" class="mock-node">
           <div class="mock-node-type">Q.Measure</div>MAE
@@ -122,6 +123,7 @@
               <input :disabled="valor == 1" id="param-2" class="number-input-modal" v-model="param_2" placeholder="NumIters" type="text">
               <input :disabled="recOpt == 0" id="param-3" class="number-input-modal" v-model="param_3" :placeholder="[[ place1 ]]" type="text">
               <input :disabled="recOpt == 0 || recOpt == 1" id="param-4" class="number-input-modal" v-model="param_4" :placeholder="[[ place2 ]]" type="text">
+              <input id="param-5" class="number-input-modal" v-model="param_5" placeholder="Rand Seed" type="text">
               <div>
                 <p v-if="error_vacio" class="error-msg">No puedes dejar campos vacíos</p>
                 <p v-if="error_tipo" class="error-msg">Has introducido un tipo de dato incorrecto</p>
@@ -173,6 +175,7 @@ export default {
       param_2: "",
       param_3: "",
       param_4: "",
+      param_5: "",
       valor: 0,
       place1: "N/A",
       place2: "N/A",
@@ -199,7 +202,7 @@ export default {
       this.grafica = false;
       this.recomendador = false;
       this.recParams = "";
-      this.param_1 = this.param_2 = this.param_3 = this.param_4 = "";
+      this.param_1 = this.param_2 = this.param_3 = this.param_4 = this.param_5 = "";
       this.error_tipo = this.error_vacio = false;
       this.recOpt = 0;
       this.imagen = "";
@@ -219,7 +222,7 @@ export default {
     },
     checkLinks() {
       this.diagramas = [];
-      console.log("links!");
+      //console.log("links!");
       //si el 'to' es un nodo de dataset, block
       let i;
       for (i = 0; i < this.nodeData.links.length; i++) {
@@ -328,9 +331,9 @@ export default {
       this.recomendador = true;
       if(type == "PMF") {
         //add third param
-        this.recOpt = 1;
+        /*this.recOpt = 1;
         this.place1 = "Lambda";
-        this.place2 = "N/A";
+        this.place2 = "N/A";*/
       } else if (type == "BNMF") {
         //add third & fourth params 
         this.recOpt = 2;
@@ -340,39 +343,39 @@ export default {
     },
     checkRecParams() {
       //comprobaciones de campos vacíos comunes y tipos de datos
-      if ((this.valor == 0 && this.param_2 == '') || (this.valor == 1 && this.param_1 == '')) {
+      if ((this.valor == 0 && this.param_2 == '') || (this.valor == 1 && this.param_1 == '') || (this.param_5 == '')) {
         this.error_vacio = true;
         console.log("campo vacio" + this.error_vacio);
       } else {
         this.error_vacio = false;
-        if (this.param_1 % 1 != 0 || this.param_2 % 1 != 0) {
+        if (this.param_1 % 1 != 0 || this.param_2 % 1 != 0 || this.param_5 % 1 != 0) {
           this.error_tipo = true;
         } else {
           this.error_tipo = false;
           //comprobaciones segun tipo de rec
           switch (this.recType) {
-            case 'PMF':
-              if (this.param_3 == '') {
-                this.error_vacio = true;
-              } else {
-                this.error_vacio = false;
-                if (this.param_3 % 1 == 0) {
+            //case 'PMF':
+              //if (this.param_3 == '') {
+                //this.error_vacio = true;
+              //} else {
+                //this.error_vacio = false;
+                /*if (this.param_3 % 1 == 0) {
                   this.error_tipo = true;
                 } else {
                   this.error_tipo = false;
-                }
-              }
-              break
+                }*/
+              //}
+              //break
             case 'BNMF':
               if (this.param_3 == '' || this.param_4 == '') {
                 this.error_vacio = true;
               } else {
                 this.error_vacio = false;
-                if (this.param_3 % 1 == 0 || this.param_4 % 1 == 0) {
+                /*if (this.param_3 % 1 == 0 || this.param_4 % 1 == 0) {
                   this.error_tipo = true;
                 } else {
                   this.error_tipo = false;
-                }
+                }*/
               }
               break
           }
@@ -390,21 +393,22 @@ export default {
         switch (this.recType) {
           case 'NMF':
           case 'HPF':
-            paramm = this.param_1 + ', ' + this.param_2; 
+            paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_5; 
             console.log(paramm);
             this.addNode(this.recType, paramm, 2);
             this.closeModal();
 
             break
           case 'PMF':
-            paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_3; 
+            //paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_3 + ', ' + this.param_5; 
+            paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_5;
             console.log(paramm);
             this.addNode(this.recType, paramm, 2);
             this.closeModal();
 
             break
           case 'BNMF':
-            paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_3 + ', ' + this.param_4 
+            paramm = this.param_1 + ', ' + this.param_2 + ', ' + this.param_3 + ', ' + this.param_4 + ', ' + this.param_5; 
             console.log(paramm);
             this.addNode(this.recType, paramm, 2);
             this.closeModal();

@@ -7,7 +7,7 @@ var writer = require('../services/writer')
 
 //borro el último diagrama generado
 router.get("/image", function (req, res) {
-  fs.unlink('./diagrama.png', (err) => {
+  fs.unlink('/client/static/diagrama.png', (err) => {
     if (err) {
       throw err;
     }
